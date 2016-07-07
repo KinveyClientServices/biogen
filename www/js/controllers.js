@@ -332,7 +332,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     });
 })
 
-.controller('PatientCtrl', function($scope, $kinvey) {
+.controller('PatientCtrl', function($scope, $kinvey, $state, $rootScope) {
 
     console.log('inside patientctrl');
 
@@ -348,6 +348,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     };
 
     var patientStore = $kinvey.DataStore.getInstance('Patient',$kinvey.DataStoreType.Network);
+    var drugStore = $kinvey.DataStore.getInstance('ClinicalSummary', $kinvey.DataStoreType.Network);
 
     $scope.searchme = function() {
         console.log('inside searchme');
@@ -373,6 +374,43 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     }, function(res) {
       console.log("subscribe complete");
     });
+    }
+
+    $scope.admitme = function(patient) {
+        console.log('inside admitme');
+        console.log(patient);
+
+        patientStore.save({
+            eventType: "Arrival",
+            _id: $scope.patient._id
+        }).then(function(models) {
+            console.log("success " + JSON.stringify(models));
+            $scope.status = "Admitted (" + models[0].Message + ")";
+            $scope.$digest();
+            alert("Admission successful, confirmation# = " + models[0].Message)
+        }, function(err) {
+            console.log("err " + JSON.stringify(err));
+        });
+    }
+
+    $scope.drugme = function(patient) {
+        console.log('inside drugme');
+        console.log(patient);
+
+        var query = new $kinvey.Query();
+        query.equalTo('FirstName', 'Matthew')
+            .equalTo('LastName', 'DeLacey');
+
+        drugStore.find(query).subscribe(function(models) {
+            console.log(models);
+            //set drug info in global scope
+            $rootScope.mydrugs = models[0].Medications;
+
+            $state.go('menu.drugs');
+            console.log('should have moved');
+        }, function(err) {
+            console.log("err " + JSON.stringify(err));
+        });
     }
 
 })
@@ -519,6 +557,12 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         });
     });
 
+})
+
+.controller('DrugCtrl', function($scope, $state, $kinvey, $rootScope) {
+    console.log('inside DrugCtrl');
+    console.log($rootScope.mydrugs);
+    $scope.drugs = $rootScope.mydrugs;
 })
 
 

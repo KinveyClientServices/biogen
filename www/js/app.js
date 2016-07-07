@@ -169,6 +169,17 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
         }
     })
 
+      .state('menu.drugs', {
+      url: '/drugs',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/drugs.html',
+          controller: 'DrugCtrl'
+        }
+      }
+    })
+
+
 .state('menu.places', {
         url: "/places",
         views: {
