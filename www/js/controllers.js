@@ -225,7 +225,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     $scope.$on('$ionicView.beforeEnter', function() {
         console.log('load search view');
 
-        var dataStore = $kinvey.DataStore.getInstance('Products');
+        var dataStore = $kinvey.DataStore.getInstance('Products', $kinvey.DataStoreType.Network);
 
         dataStore.find().subscribe(function(result) {
             var products = result;
@@ -240,7 +240,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         console.log('inside searchctrl');
 
         console.log(document.getElementById("chosenProduct").value);
-        var dataStore = $kinvey.DataStore.getInstance('Products');
+        var dataStore = $kinvey.DataStore.getInstance('Products', $kinvey.DataStoreType.Network);
 
         var query = new $kinvey.Query();
         query.equalTo('title', document.getElementById("chosenProduct").value);
@@ -293,7 +293,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         data.Title = "Personal Task";
         console.log(JSON.stringify(data));
 
-        var dataStore = $kinvey.DataStore.getInstance('todo', $kinvey.DataStoreType.Sync);
+        var dataStore = $kinvey.DataStore.getInstance('todo', $kinvey.DataStoreType.Network);
 
         dataStore.save(data).then(function(result) {
             console.log(result);
@@ -316,7 +316,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
 .controller('ProductCtrl', function($scope, $kinvey) {
 
-    var dataStore = $kinvey.DataStore.getInstance('Products');
+    var dataStore = $kinvey.DataStore.getInstance('Products', $kinvey.DataStoreType.Network);
 
     $scope.$on('$ionicView.beforeEnter', function() {
 
@@ -467,27 +467,33 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     //
     $scope.doRefreshRef = function() {
         console.log('ref refresh view');
-        var fileStore = new $kinvey.FileStore();
+        //var fileStore = new $kinvey.Files();
         var query = new $kinvey.Query();
         query.greaterThan('size', 0);
-        fileStore.find(query).then(function(files) {
+
+        var promise = $kinvey.Files.find(query).then(function(files) {
             console.log(files);
             $scope.files = files;
             $scope.$digest();
+        }).catch(function(error) {
+            console.log(error);
         });
+
     }
 
     $scope.$on('$ionicView.beforeEnter', function() {
         console.log('ref load view');
 
-        var fileStore = new $kinvey.FileStore();
         var query = new $kinvey.Query();
         query.greaterThan('size', 0);
-        fileStore.find(query).then(function(files) {
+        var promise = $kinvey.Files.find(query).then(function(files) {
             console.log(files);
             $scope.files = files;
             $scope.$digest();
+        }).catch(function(error) {
+            console.log(error);
         });
+        
     });
 })
 
@@ -505,6 +511,87 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         //$scope.$digest();
     });
 })
+
+
+
+.controller('OfflineCtrl', function($scope, $kinvey, $ionicLoading) {
+    console.log('inside offline ctrl');
+
+    $scope.autoCreate = function(n) {
+        var tasks = [];
+        for (var i = 0; i < n; i++) {
+            const task = {
+                "accountname": "Account #" + i,
+                "accountcompany": "Company #" + i,
+                "autogen": true,
+                "Title": "Sync Data"
+            }
+            tasks.push(task);
+        }
+        console.log(tasks);
+        saveToStore(tasks);
+    }
+
+    var dataStore = $kinvey.DataStore.getInstance('Account', $kinvey.DataStoreType.Sync);
+
+    function saveToStore(data) {
+        //save the task to the store
+        dataStore.save(data).then(function(result) {
+            console.log(result);
+            //render(result);
+            console.log(data);
+            $scope.accounts = $scope.accounts.concat(result);
+            $scope.$digest();
+             $ionicLoading.show({
+            template: '' + data.length + ' task(s) inserted',
+            noBackdrop: true,
+            duration: 2000
+        });
+
+        }).catch(function(error) {
+            console.log(error);
+        });
+    }
+
+    $scope.syncme = function() {
+        console.log('syncme');
+        dataStore.sync().then(function(result) {
+            console.log(result);
+            console.log('pull = ');
+            console.log(result.pull);
+            console.log('push=');
+            console.log(result.push);
+            $scope.servicetechs = result.pull;
+            $scope.$digest();
+        }).catch(function(error) {
+            console.log(error);
+        });
+    }
+
+    $scope.$on('$ionicView.beforeEnter', function() {
+        console.log('offline load view');
+        var dataStore = $kinvey.DataStore.getInstance('Account', $kinvey.DataStoreType.Sync);
+        dataStore.pull().then(function(result) {
+            console.log(result);
+            $scope.accounts = result;
+            $scope.$digest();
+        });
+
+    });
+
+    function render(result) {
+        const resultArr = [].concat(result);
+        $ionicLoading.show({
+            template: '' + resultArr.length + ' task(s) inserted',
+            noBackdrop: true,
+            duration: 2000
+        });
+        $scope.$digest();
+    }
+
+})
+
+
 
 .controller('PartnerCtrl', function($scope, $kinvey) {
 

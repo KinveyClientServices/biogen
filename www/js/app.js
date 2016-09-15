@@ -202,6 +202,16 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
         }
     })
 
+      .state('menu.offline', {
+        url: '/offline',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/offline.html',
+                controller: 'OfflineCtrl'
+            }
+        }
+    })
+
     .state('menu.tabs.search', {
         url: '/search',
         views: {
