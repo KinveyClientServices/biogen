@@ -37,12 +37,13 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
 
 
 
-.config(function($stateProvider, $urlRouterProvider, $kinveyProvider) {
+.config(function($stateProvider, $urlRouterProvider, $kinveyProvider, $ionicConfigProvider) {
 
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
     // Each state's controller can be found in controllers.js
+    $ionicConfigProvider.tabs.position('bottom');
 
     $kinveyProvider.init({
         appKey: 'kid_ZJk02vOUFg',
