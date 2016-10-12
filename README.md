@@ -10,17 +10,17 @@ accounts collection - show importing the data and then "flip the switch" to eith
 tasks Collection - Import data and then you can show, can connect to sharepoint
 
 You may have to reinstall your cordova plugins:
--cordova plugin rm org.apache.cordova.console
--cordova plugin add cordova-plugin-console
--cordova plugin rm org.apache.cordova.device
--cordova plugin add cordova-plugin-device
--cordova plugin rm com.ionic.keyboard
--cordova plugin add ionic-plugin-keyboard
--cordova plugins list
--cordova plugin rm com.phonegap.plugins.PushPlugin
--ionic build ios
--ionic platform remove ios
--ionic platform add ios
+- cordova plugin rm org.apache.cordova.console
+- cordova plugin add cordova-plugin-console
+- cordova plugin rm org.apache.cordova.device
+- cordova plugin add cordova-plugin-device
+- cordova plugin rm com.ionic.keyboard
+- cordova plugin add ionic-plugin-keyboard
+- cordova plugins list
+- cordova plugin rm com.phonegap.plugins.PushPlugin
+- ionic build ios
+- ionic platform remove ios
+- ionic platform add ios
 
 
 It is possible that you might need to install an earlier version of the ios platform.  Try the standard cordova platform add ios first, but if that yirlds failures, try:
