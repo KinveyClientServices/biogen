@@ -737,7 +737,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         var dataStore = $kinvey.DataStore.getInstance('DemoBrandingData', $kinvey.DataStoreType.Network);
 
 
-        dataStore.find(query).subscribe(function(result) {
+        dataStore.find().subscribe(function(result) {
             console.log(result);
             var brand = result;
             console.log(brand);
