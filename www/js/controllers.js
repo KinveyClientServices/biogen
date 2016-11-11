@@ -354,7 +354,14 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     });
 
     $scope.doRefresh = function() {
-        console.log('here');
+        console.log('refresh');
+        dataStore.find().subscribe(function(result) {
+            var products = result;
+            console.log(products);
+            $scope.products = products;
+            $scope.$digest();
+        });
+        $scope.$broadcast('scroll.refreshComplete');
     }
 })
 

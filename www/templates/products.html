@@ -1,9 +1,10 @@
 <ion-view cache-view="false" view-title="Products">
-<ion-refresher
+
+  <ion-content class="has-header padding">
+  <ion-refresher
     pulling-text="Pull to refresh..."
     on-refresh="doRefresh()">
   </ion-refresher>
-  <ion-content class="has-header padding">
     <ion-list>
       <ion-item class="item-remove-animate item-leftitem-icon-right pane" ng-repeat="product in products" type="item-text-wrap">
       <center><img ng-src="img/{{product.thumbimg}}" height="100">
