@@ -8,6 +8,21 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     };
 })
 
+.controller('MyVideoCtrl', function($scope, $kinvey, $stateParams) {
+    console.log($stateParams.videoId);
+    //$scope.chat = Chats.get($stateParams.chatId);
+    var promise = $kinvey.Files.stream($stateParams.videoId, {
+        tls: false
+    });
+    promise.then(function(file) {
+        console.log(file);
+        var url = file._downloadURL;
+        file._downloadURL = 'https://docs.google.com/gview?embedded=true&url=' + file._downloadURL;
+        console.log(url);
+        $scope.file = file;
+    });
+})
+
 .controller('PlacesCtrl', function($kinvey, $scope, $rootScope) {
 
     console.log('places ctrl');
@@ -337,6 +352,10 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
             $scope.$digest();
         });
     });
+
+    $scope.doRefresh = function() {
+        console.log('here');
+    }
 })
 
 .controller('PatientCtrl', function($scope, $kinvey, $state, $rootScope) {

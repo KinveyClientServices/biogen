@@ -37,8 +37,15 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
 
 
 
-.config(function($stateProvider, $urlRouterProvider, $kinveyProvider, $ionicConfigProvider) {
+.config(function($stateProvider, $urlRouterProvider, $kinveyProvider, $ionicConfigProvider, $sceDelegateProvider) {
 
+
+    $sceDelegateProvider.resourceUrlWhitelist([
+       // Allow same origin resource loads.
+       'self',
+       // Allow loading from our assets domain.  Notice the difference between * and **.
+       'http://storage.googleapis.com/**',
+       'https://docs.google.com/**']);
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
@@ -221,6 +228,16 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
                 controller: 'SearchCtrl'
             }
         }
+    })
+
+    .state('menu.video', {
+      url: '/video/:videoId',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/myvideo.html',
+          controller: 'MyVideoCtrl'
+        }
+      }
     })
 
 

@@ -10,7 +10,7 @@
 
   <ion-content  class="has-header padding">
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-left" ng-repeat="file in files" type="item-text-wrap" href="{{file._downloadURL}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-left" ng-repeat="file in files" type="item-text-wrap" href="#/menu/video/{{file._id}}"><!--href="{{file._downloadURL}}">-->
         <!--<img ng-src="{{file.face}}">-->
         
         <h2>{{file.prettyname}}</h2>

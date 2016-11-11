@@ -1,4 +1,11 @@
 # SDE-Angular-Generic
+CHANGES
+11/11/2016
+- added support for pull-to-refresh on products screen
+- improved the way we display files
+- fixed drilldown on accounts screen
+- minor UI fixes
+
 This app is written using the Ionic Framework, which leverages the Kinvey AngularJS libraries to communicate with the backend.
 
 This app demonstrates the following functionality.
