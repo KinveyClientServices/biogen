@@ -789,7 +789,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
 
 
-.controller('AccountCtrl', function($scope, $state, $kinvey, $cordovaPush, $http) {
+.controller('AccountCtrl', function($scope, $state, $kinvey, $cordovaPush, $http, $ionicLoading) {
     $scope.userData = {
         email: "",
         password: ""
@@ -815,6 +815,16 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
                 //Kinvey login finished with error
                 $scope.submittedError = true;
                 $scope.errorDescription = error.description;
+                console.log(error);
+
+                if ( error.name == "InsufficientCredentialsError") {
+                    console.log( 'insufficient credentials');
+                }
+                $ionicLoading.show({
+            template: error.message,
+            noBackdrop: true,
+            duration: 2000
+        });
                 console.log("Error login " + error.description); //
             });
     };
@@ -849,6 +859,19 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     }
 
     $scope.signUp = function() {
+
+        console.log($scope.userData.email);
+        console.log($scope.userData.password);
+        
+        if ( $scope.userData.email == "" || $scope.userData.password == '') {
+            $ionicLoading.show({
+            template: "Please fill out username and password",
+            noBackdrop: true,
+            duration: 2000
+        });
+            return;
+        }
+
         var promise = $kinvey.User.signup({
             username: $scope.userData.email,
             password: $scope.userData.password,
@@ -866,7 +889,12 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
                 //Kinvey signup finished with error
                 $scope.submittedError = true;
                 $scope.errorDescription = error.description;
-                console.log("signup error: " + error.description);
+                console.log(error);
+                $ionicLoading.show({
+            template: error.message,
+            noBackdrop: true,
+            duration: 2000
+        });
             }
         );
     };
@@ -882,5 +910,10 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
             });
         }*/
         $kinvey.User.logout();
+        $ionicLoading.show({
+            template: "User logged out",
+            noBackdrop: true,
+            duration: 2000
+        });
     }
 });
