@@ -10,17 +10,10 @@
             <div class="list card">
                 <div class="item item-thumbnail-left item-text-wrap">
                     <img src="img/list.png">
-                    <br><h2>My Personal</h2>
+                    <br>
+                    <h2>My Personal</h2>
                     <p>To Do List</p>
                 </div>
-                <!--
-  <div class="item item-body">
-    <img class="full-image" src="img/acme2.png">
-    <p>
-      The single most common mistake that most policyholders make is not reviewing their coverage often enough.  Policyholders mistakenly think that these reviews are just opportunities for the insurance companies to charge more.  The fact of the matter is that over three quarters of the reviews that we conduct at Acme Insurance end up saving the customer money.
-    </p>
-    
-  </div>-->
                 <label class="item item-input item-thumbnail-left">
                     <i class="icon ion-ios-list-outline placeholder-icon"></i>
                     <input type="text" placeholder="Task" id="task">
@@ -29,24 +22,20 @@
                     <i class="icon ion-ios-list-outline placeholder-icon"></i>
                     <input type="text" placeholder="Due Date" id="duedate">
                 </label>
-                
                 <li class="item item-checkbox bar-energized">
                     <label class="checkbox">
                         <input type="checkbox" id="completed">
                     </label>
                     Completed?
                 </li>
-                
             </div>
-            <a class="button button-small kinveybutton" ng-click="insertme();">save</a>
+            <button class="button icon-left ion-camera" ng-click="picMe()">Photo</button>
+            <button class="button icon-left ion-ios-cloud-upload" ng-click="insertme()">Save</button>
+            <button class="button icon-left ion-clipboard" ng-click="reportMe()">Report</button>
+            <img id="myImage" width="100%"></img>
         </div>
     </ion-content>
     <div class="bar bar-footer bar-kinvey">
         <div class="title"></div>
     </div>
-    <!--<ion-footer-bar align-title="left" class="bar-generac">
-  
-  <a class="button button-icon icon ion-arrow-left-a" href="#/menu/gas6"></a>
-  
-</ion-footer-bar>-->
 </ion-view>

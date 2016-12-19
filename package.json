@@ -22,7 +22,9 @@
     "phonegap-plugin-push",
     "cordova-plugin-dialogs",
     "cordova-plugin-vibration",
-    "phonegap-plugin-push"
+    "phonegap-plugin-push",
+    "cordova-plugin-camera",
+    "cordova-plugin-file"
   ],
   "cordovaPlatforms": [
     "ios"

@@ -70,18 +70,18 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     //
     $scope.initialize = function() {
 
-        console.log('initializing map');
+            console.log('initializing map');
 
-        var myLatlng = new google.maps.LatLng(39.8282109, -98.5795706);
+            var myLatlng = new google.maps.LatLng(39.8282109, -98.5795706);
 
-        var mapOptions = {
-            center: myLatlng,
-            zoom: 3,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        $rootScope.map = new google.maps.Map(document.getElementById("mymap"),
-        mapOptions);
-    } // end initialize
+            var mapOptions = {
+                center: myLatlng,
+                zoom: 3,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            $rootScope.map = new google.maps.Map(document.getElementById("mymap"),
+                mapOptions);
+        } // end initialize
 
 
     // if the user has specified a distance, this grabs the points of interest in the Account
@@ -274,15 +274,231 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
             console.log(thisproduct);
             $scope.thisproduct = thisproduct;
             $scope.$digest();
-            return; 
+            return;
         });
     };
 })
 
-.controller('InsertTicketCtrl', function($scope, $kinvey, $ionicLoading) {
+.controller('InsertTicketCtrl', function($scope, $kinvey, $ionicLoading, $cordovaFile) {
+
+    $scope.taskInfo = {
+        myfile: "",
+        savedurl: ""
+    }
+
+    //$scope.fileAnalysis = {};
+
+    $scope.reportMe = function() {
+        console.log('reportme');
+        console.log($scope.taskInfo.savedurl);
+
+        // post filename to custom endpoint
+        //
+        var promise = $kinvey.CustomEndpoint.execute('analyzeImage', {
+            filename: "http://www.rawstory.com/wp-content/uploads/2013/12/Smiling-man-on-Shutterstock.jpg"//$scope.taskInfo.savedurl
+        });
+        promise.then(function(response) {
+            console.log('here');
+            console.log(response[0]);
+            console.log(response[0].labelAnnotations);
+            var myannotations = response[0].labelAnnotations;
+
+            if (response[0].faceAnnotations != null) {
+                var faceannotations = response[0].faceAnnotations;
+
+                var joyLikelihood = faceannotations[0].joyLikelihood;
+                var angerLikelihood = faceannotations[0].angerLikelihood;
+                var sorrowLikelihood = faceannotations[0].sorrowLikelihood;
+                var surpriseLikelihood = faceannotations[0].surpriseLikelihood;
+
+                var myemotions = "EMOTIONS:";
+
+                if (joyLikelihood == "VERY_UNLIKELY" || joyLikelihood == "UNKNOWN") {
+                    joyLikelihood = false;
+                } else {
+                    joyLikelihood = true;
+                    myemotions = myemotions + " HAPPY";
+                }
+
+                if (angerLikelihood == "VERY_UNLIKELY" || angerLikelihood == "UNKNOWN") {
+                    angerLikelihood = false;
+                } else {
+                    angerLikelihood = true;
+                    myemotions = myemotions + " ANGRY";
+                }
+
+                if (sorrowLikelihood == "VERY_UNLIKELY" || sorrowLikelihood == "UNKNOWN") {
+                    sorrowLikelihood = false;
+                } else {
+                    sorrowLikelihood = true;
+                    myemotions = myemotions + " SAD";
+                }
+
+                if (surpriseLikelihood == "VERY_UNLIKELY" || surpriseLikelihood == "UNKNOWN") {
+                    surpriseLikelihood = false;
+                } else {
+                    surpriseLikelihood = true;
+                    myemotions = myemotions + " SURPRISE";
+                }
+
+
+                console.log(joyLikelihood);
+                console.log(angerLikelihood);
+                console.log(sorrowLikelihood);
+                console.log(surpriseLikelihood);
+
+                console.log(faceannotations);
+            }
+
+            if ( response[0].textAnnotations != null ) {
+
+            }
+            var dataArray = new Array;
+
+            for (var o in myannotations) {
+                dataArray.push(myannotations[o].description);
+            }
+
+            var photoLabels = dataArray.join(", ");
+            photoLabels = "ANALYSIS:  " + photoLabels;
+
+            if (myemotions && myemotions.length > 9) {
+                photoLabels = photoLabels + "\n\n" + myemotions;
+            }
+
+            if ( response[0].textAnnotations != null ) {
+                photoLabels = photoLabels + "<br>TEXT: " + response[0].textAnnotations[0].description;
+            }
+            console.log(photoLabels);
+
+            console.log(dataArray);
+            $ionicLoading.show({
+                template: photoLabels,
+                noBackdrop: true,
+                duration: 5000
+            });
+
+            $scope.fileAnalysis = response[0];
+        }).catch(function(err) {
+            console.log(err);
+        });
+
+    }
+
+    $scope.insertme = function() {
+        console.log($scope.taskInfo.myfile);
+
+        var fileUri = $scope.taskInfo.myfile;
+
+        if (fileUri != "") {
+
+            window.resolveLocalFileSystemURL(fileUri,
+                function(fileEntry) {
+                    fileEntry.file(function(file) {
+                        console.log(file);
+
+                        var reader = new FileReader();
+                        var myindex = $scope.taskInfo.myfile.lastIndexOf('/') + 1;
+                        var mystring = $scope.taskInfo.myfile.substring(myindex);
+
+                        reader.onload = function(event) {
+                            console.log('onload');;
+                            console.log(event);
+                        }
+
+                        reader.onloadend = function(event) {
+                            console.log('onloadend');
+                            var imagedata = event.target._result;
+                            console.log(imagedata.byteLength);
+                            var metadata = {
+                                filename: "ServicePic.jpg",
+                                mimeType: "image/jpeg",
+                                size: imagedata.byteLength,
+                                public: true
+                            };
+                            console.log(event);
+
+                            var promise = $kinvey.Files.upload(imagedata, metadata)
+                                .then(function(myfile) {
+                                    console.log(myfile);
+                                    var promise = $kinvey.Files.stream(myfile._id)
+                                        .then(function(file) {
+                                            console.log(file);
+                                            $scope.taskInfo.savedurl = file._downloadURL;
+
+                                        })
+                                        .catch(function(error) {
+                                            console.log(error);
+                                        });
+
+                                })
+                                .catch(function(error) {
+                                    console.log(error);
+                                });
+                        };
+
+                        reader.readAsArrayBuffer(file);
+                    });
+                }
+            );
+        }
+
+        // insert task
+        //
+        var mytask = document.getElementById("task").value;
+        document.getElementById("task").value = "";
+        console.log(mytask);
+
+        var myduedate = document.getElementById("duedate").value;
+        console.log(duedate);
+        document.getElementById("duedate").value = "";
+
+
+
+        var mycomplete = document.getElementById("completed").checked;
+        console.log(mycomplete);
+
+
+        var complete = false;
+        if (mycomplete == true) {
+            complete = true;
+        } else {
+            complete = false;
+        }
+
+
+        var data = {};
+
+        data.action = mytask;
+        data.duedate = myduedate;
+        data.completed = complete;
+        data.class = "personal";
+        data.Title = "Personal Task";
+        data.savedpic = $scope.taskInfo.savedurl;
+        console.log(JSON.stringify(data));
+
+        var dataStore = $kinvey.DataStore.getInstance('tasks', $kinvey.DataStoreType.Network);
+
+        dataStore.save(data).then(function(result) {
+            console.log(result);
+        }).catch(function(error) {
+            console.log(error);
+        });
+
+        $ionicLoading.show({
+            template: 'task inserted',
+            noBackdrop: true,
+            duration: 2000
+        });
+    }
+
+
+
+
+
     // inserts the tasks into the tasks collection
     //
-    $scope.insertme = function() {
+    /*$scope.insertme2 = function() {
         var mytask = document.getElementById("task").value;
         document.getElementById("task").value = "";
         console.log(mytask);
@@ -328,7 +544,31 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
             duration: 2000
         });
 
-    };
+    };*/
+
+    $scope.picMe = function() {
+        console.log('saving picture');
+
+        navigator.camera.getPicture(onSuccess, onFail, {
+            quality: 50,
+            destinationType: Camera.DestinationType.FILE_URI
+        });
+
+        function onSuccess(imageURI) {
+            var image = document.getElementById('myImage');
+            image.src = imageURI;
+            $scope.taskInfo.myfile = imageURI;
+            console.log(imageURI);
+            // now you need to write this back
+        }
+
+        function onFail(message) {
+            alert('Failed because: ' + message);
+        }
+
+    }
+
+
 })
 
 
@@ -549,7 +789,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     var dataStore = $kinvey.DataStore.getInstance('accounts', $kinvey.DataStoreType.Network);
 
     dataStore.findById($stateParams.partnerId).subscribe(function(result) {
-        
+
         console.log(result);
         $scope.invoices = result.invoice;
         $scope.$digest();
@@ -615,7 +855,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     $scope.deltame = function() {
         console.log('deltame');
         //dataStore.useDeltaFetch = true;
-        dataStore.pull(null, {useDeltaFetch: true}).then(function(result) {
+        dataStore.pull(null, { useDeltaFetch: true }).then(function(result) {
             console.log(result);
             /*console.log('pull = ');
             console.log(result.pull);
@@ -817,14 +1057,14 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
                 $scope.errorDescription = error.description;
                 console.log(error);
 
-                if ( error.name == "InsufficientCredentialsError") {
-                    console.log( 'insufficient credentials');
+                if (error.name == "InsufficientCredentialsError") {
+                    console.log('insufficient credentials');
                 }
                 $ionicLoading.show({
-            template: error.message,
-            noBackdrop: true,
-            duration: 2000
-        });
+                    template: error.message,
+                    noBackdrop: true,
+                    duration: 2000
+                });
                 console.log("Error login " + error.description); //
             });
     };
@@ -862,13 +1102,13 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         console.log($scope.userData.email);
         console.log($scope.userData.password);
-        
-        if ( $scope.userData.email == "" || $scope.userData.password == '') {
+
+        if ($scope.userData.email == "" || $scope.userData.password == '') {
             $ionicLoading.show({
-            template: "Please fill out username and password",
-            noBackdrop: true,
-            duration: 2000
-        });
+                template: "Please fill out username and password",
+                noBackdrop: true,
+                duration: 2000
+            });
             return;
         }
 
@@ -891,10 +1131,10 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
                 $scope.errorDescription = error.description;
                 console.log(error);
                 $ionicLoading.show({
-            template: error.message,
-            noBackdrop: true,
-            duration: 2000
-        });
+                    template: error.message,
+                    noBackdrop: true,
+                    duration: 2000
+                });
             }
         );
     };
