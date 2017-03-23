@@ -7,6 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 
 
+
 angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWebViewPatch', 'ngCordova'])
 
 .run(function($ionicPlatform, $kinvey, $rootScope, $state, $location) {
@@ -15,9 +16,7 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
     $rootScope.productsname = "Products";
     determineBehavior($kinvey, $rootScope, $state);
 
-    $kinvey.Push.onNotification(function(notification) {
-      alert(notification.message);
-    });
+    
 
     
 
@@ -31,6 +30,11 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
             // org.apache.cordova.statusbar required
             StatusBar.styleLightContent();
         }
+
+        $kinvey.Push.onNotification(function(notification) {
+      alert(notification.message);
+    });
+        
     });
 })
 

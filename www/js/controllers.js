@@ -295,7 +295,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         // post filename to custom endpoint
         //
         var promise = $kinvey.CustomEndpoint.execute('analyzeImage', {
-            filename: "http://www.rawstory.com/wp-content/uploads/2013/12/Smiling-man-on-Shutterstock.jpg"//$scope.taskInfo.savedurl
+            filename: $scope.taskInfo.savedurl
         });
         promise.then(function(response) {
             console.log('here');
@@ -645,7 +645,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
                 $scope.patient = models[0];
                 $scope.$digest();
             } else {
-                alert("no results found, please specify First, Last, DOB")
+                alert("no results found, please specify FirstName, LastName")
             }
         }, function(err) {
             console.log("err " + JSON.stringify(err));

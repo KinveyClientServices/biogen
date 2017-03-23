@@ -1,10 +1,4 @@
 # SDE-Angular-Generic
-CHANGES
-11/11/2016
-- added support for pull-to-refresh on products screen
-- improved the way we display files
-- fixed drilldown on accounts screen
-- minor UI fixes
 
 This app is written using the Ionic Framework, which leverages the Kinvey AngularJS libraries to communicate with the backend.
 
@@ -16,21 +10,13 @@ Filestore - you can put PDF and other file content in the filestore and see them
 accounts collection - show importing the data and then "flip the switch" to either SFDC, REST, SQL Server, or (with a little BL) SAP.
 tasks Collection - Import data and then you can show, can connect to sharepoint
 
-You may have to reinstall your cordova plugins:
-- cordova plugin rm org.apache.cordova.console
-- cordova plugin add cordova-plugin-console
-- cordova plugin rm org.apache.cordova.device
-- cordova plugin add cordova-plugin-device
-- cordova plugin rm com.ionic.keyboard
-- cordova plugin add ionic-plugin-keyboard
-- cordova plugins list
-- cordova plugin rm com.phonegap.plugins.PushPlugin
-- ionic build ios
-- ionic platform remove ios
-- ionic platform add ios
+To have ionic install your cordova plugins run:
+ionic state restore
+
+from the root directory
 
 
-It is possible that you might need to install an earlier version of the ios platform.  Try the standard cordova platform add ios first, but if that yirlds failures, try:
+It is possible that you might need to install an earlier version of the ios platform.  Try the standard cordova platform add ios first, but if that yields failures, try:
 ionic platform add ios@3.9.2
 
 
@@ -46,4 +32,16 @@ You may need to modify your plist file to give permissions for unsecure http tra
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>Your message goes here</string>
 ```
+
+
+CHANGES
+03/23/2017
+- clarified installation of plugin
+- updated sdk to 3.4.2
+
+11/11/2016
+- added support for pull-to-refresh on products screen
+- improved the way we display files
+- fixed drilldown on accounts screen
+- minor UI fixes
 
