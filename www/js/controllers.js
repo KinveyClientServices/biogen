@@ -974,18 +974,6 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 .controller('HomeCtrl', function($scope, $kinvey, $ionicSideMenuDelegate, $rootScope, $state) {
     console.log('home');
 
-    try {
-        navigator.geolocation.getCurrentPosition(function(loc) {
-            console.log('getting position');
-            var coord = [loc.coords.latitude, loc.coords.longitude];
-            console.log(coord);
-            $rootScope.current_loc = coord;
-        });
-    } catch (evt) {
-        alert('fail' + evt.message);
-    }
-
-
     $scope.$on('$ionicView.beforeEnter', function() {
         // we're authenticated, grab logo and color scheme
         console.log('home');

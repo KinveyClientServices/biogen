@@ -37,6 +37,17 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
             StatusBar.styleLightContent();
         }
 
+        try {
+        navigator.geolocation.getCurrentPosition(function(loc) {
+            console.log('getting position');
+            var coord = [loc.coords.latitude, loc.coords.longitude];
+            console.log(coord);
+            $rootScope.current_loc = coord;
+        });
+    } catch (evt) {
+        alert('fail' + evt.message);
+    }
+
         /*$kinvey.Push.onNotification(function(notification) {
       alert(notification.message);
     });*/
