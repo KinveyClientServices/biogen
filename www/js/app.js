@@ -6,7 +6,9 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 
-
+var onNotificationCallback = function(notification) {
+  alert(notification.message);
+};
 
 angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWebViewPatch', 'ngCordova'])
 
@@ -17,7 +19,11 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
     determineBehavior($kinvey, $rootScope, $state);
 
     
+    if ($kinvey.User.getActiveUser()) {
+        $kinvey.Push.register();
+    }
 
+    $kinvey.Push.onNotification(onNotificationCallback);
     
 
     $ionicPlatform.ready(function() {
@@ -31,9 +37,9 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
             StatusBar.styleLightContent();
         }
 
-        $kinvey.Push.onNotification(function(notification) {
+        /*$kinvey.Push.onNotification(function(notification) {
       alert(notification.message);
-    });
+    });*/
         
     });
 })

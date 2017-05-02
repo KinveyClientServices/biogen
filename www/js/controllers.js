@@ -350,7 +350,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
                 console.log(faceannotations);
             }
 
-            if ( response[0].textAnnotations != null ) {
+            if (response[0].textAnnotations != null) {
 
             }
             var dataArray = new Array;
@@ -366,7 +366,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
                 photoLabels = photoLabels + "\n\n" + myemotions;
             }
 
-            if ( response[0].textAnnotations != null ) {
+            if (response[0].textAnnotations != null) {
                 photoLabels = photoLabels + "<br>TEXT: " + response[0].textAnnotations[0].description;
             }
             console.log(photoLabels);
@@ -1140,16 +1140,23 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     };
 
     $scope.logout = function() {
-        console.log('logout user');
+        console.log('logout user2');
         //Kinvey logout starts
-        /*var user = $kinvey.User.getActiveUser();
+        var user = $kinvey.User.getActiveUser();
         if (user) {
-            return user.logout().catch(function(error) {
-                //Kinvey logout finished with error
-                alert("Error logout: " + JSON.stringify(error));
-            });
-        }*/
-        $kinvey.User.logout();
+
+            $kinvey.Push.unregister()
+                .then(function(response) {
+                    console.log(response);
+                    return $kinvey.User.logout();
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        } else {
+            console.log('no user to log out');
+        }
+        //$kinvey.User.logout();
         $ionicLoading.show({
             template: "User logged out",
             noBackdrop: true,
