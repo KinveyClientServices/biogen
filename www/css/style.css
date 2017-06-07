@@ -41,23 +41,6 @@
 }
 
 
-.bar-harley {
-   background-color: #ff6600 !important;
-   color: #ff6600;   
-}
-
-.harley-text {
-   color: #ff6600 !important;
-}
-
-.bar-zeeco {
-   background-color: #e32228 !important;
-   color: #e32228;   
-}
-
-.zeeco-text {
-   color: #e32228 !important;
-}
 
 .kinvey-text {
    color: #f0582e !important;
@@ -65,83 +48,11 @@
 
 
 
-.harleybutton {
-   border-top: 1px solid #000000;
-   background: #ff6600;
-   /*background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#0088c2));
-   background: -webkit-linear-gradient(top, #333333, #0088c2);
-   background: -moz-linear-gradient(top, #333333, #0088c2);
-   background: -ms-linear-gradient(top, #333333, #0088c2);
-   background: -o-linear-gradient(top, #333333, #0088c2);*/
-   padding: 9px 18px;
-   -webkit-border-radius: 8px;
-   -moz-border-radius: 8px;
-   border-radius: 8px;
-   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   box-shadow: rgba(0,0,0,1) 0 1px 0;
-   text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   color: #ffffff;
-   font-size: 14px;
-   font-family: "HelveticaNeueBlack", "HelveticaNeue-Black", "Helvetica Neue Black", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosBold', "Arial Black", sans-serif; font-weight:800; font-stretch:normal; 
-   text-decoration: none;
-   vertical-align: middle;
-   }
-.harleybutton:hover {
-   border-top-color: #333333;
-   background: #ff6600;
-   color: #000000;
-   }
-.harleybutton:active {
-   border-top-color: #1b435e;
-   background: #ff6600;
-   color: #000000;
-   }
-
-.zeecobutton {
-   border-top: 1px solid #000000;
-   background: #e32228;
-   /*background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#0088c2));
-   background: -webkit-linear-gradient(top, #333333, #0088c2);
-   background: -moz-linear-gradient(top, #333333, #0088c2);
-   background: -ms-linear-gradient(top, #333333, #0088c2);
-   background: -o-linear-gradient(top, #333333, #0088c2);*/
-   padding: 9px 18px;
-   -webkit-border-radius: 8px;
-   -moz-border-radius: 8px;
-   border-radius: 8px;
-   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   box-shadow: rgba(0,0,0,1) 0 1px 0;
-   text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   color: #ffffff;
-   font-size: 14px;
-   font-family: "HelveticaNeueBlack", "HelveticaNeue-Black", "Helvetica Neue Black", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosBold', "Arial Black", sans-serif; font-weight:800; font-stretch:normal; 
-   text-decoration: none;
-   vertical-align: middle;
-   }
-.zeecobutton:hover {
-   border-top-color: #333333;
-   background: #e32228;
-   color: #000000;
-   }
-.zeecobutton:active {
-   border-top-color: #1b435e;
-   background: #e32228;
-   color: #000000;
-   }
-
-
-
 
 .acmebutton {
    border-top: 1px solid #000000;
    background: #0088c2;
-   /*background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#0088c2));
-   background: -webkit-linear-gradient(top, #333333, #0088c2);
-   background: -moz-linear-gradient(top, #333333, #0088c2);
-   background: -ms-linear-gradient(top, #333333, #0088c2);
-   background: -o-linear-gradient(top, #333333, #0088c2);*/
+  
    padding: 9px 18px;
    -webkit-border-radius: 8px;
    -moz-border-radius: 8px;
@@ -170,11 +81,7 @@
 .medbutton {
    border-top: 1px solid #000000;
    background: #1667a1;
-   /*background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#0088c2));
-   background: -webkit-linear-gradient(top, #333333, #0088c2);
-   background: -moz-linear-gradient(top, #333333, #0088c2);
-   background: -ms-linear-gradient(top, #333333, #0088c2);
-   background: -o-linear-gradient(top, #333333, #0088c2);*/
+   
    padding: 9px 18px;
    -webkit-border-radius: 8px;
    -moz-border-radius: 8px;
@@ -207,11 +114,6 @@
 .kinveybutton {
    border-top: 1px solid #000000;
    background: #f5a68e;
-   /*background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#0088c2));
-   background: -webkit-linear-gradient(top, #333333, #0088c2);
-   background: -moz-linear-gradient(top, #333333, #0088c2);
-   background: -ms-linear-gradient(top, #333333, #0088c2);
-   background: -o-linear-gradient(top, #333333, #0088c2);*/
    padding: 9px 18px;
    -webkit-border-radius: 8px;
    -moz-border-radius: 8px;
@@ -246,11 +148,11 @@
 }
 
 
-   .login-background {
-    background: url('../img/splash.png') no-repeat center center fixed;
-    background-size: cover;
-  height: 100%;
-  overflow: hidden;
+.login-background {
+      /*background: url('../img/splash.png') no-repeat center center fixed;*/
+      background-size: cover;
+      height: 100%;
+      overflow: hidden;
 }
 
 #mymap {

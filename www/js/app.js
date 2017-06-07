@@ -1,4 +1,4 @@
-// Ionic Starter App
+// Ionic Training App
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
@@ -7,24 +7,24 @@
 // 'starter.controllers' is found in controllers.js
 
 var onNotificationCallback = function(notification) {
-  alert(notification.message);
+    alert(notification.message);
 };
 
 angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWebViewPatch', 'ngCordova'])
 
 .run(function($ionicPlatform, $kinvey, $rootScope, $state, $location) {
 
-    $rootScope.primarycolor = "#D44B2B";
+    $rootScope.primarycolor = "#2573ba";
     $rootScope.productsname = "Products";
     determineBehavior($kinvey, $rootScope, $state);
 
-    
+
     if ($kinvey.User.getActiveUser()) {
         $kinvey.Push.register();
     }
 
     $kinvey.Push.onNotification(onNotificationCallback);
-    
+
 
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -38,35 +38,30 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
         }
 
         try {
-        navigator.geolocation.getCurrentPosition(function(loc) {
-            console.log('getting position');
-            var coord = [loc.coords.latitude, loc.coords.longitude];
-            console.log(coord);
-            $rootScope.current_loc = coord;
-        });
-    } catch (evt) {
-        alert('fail' + evt.message);
-    }
+            navigator.geolocation.getCurrentPosition(function(loc) {
+                console.log('getting position');
+                var coord = [loc.coords.latitude, loc.coords.longitude];
+                console.log(coord);
+                $rootScope.current_loc = coord;
+            });
+        } catch (evt) {
+            alert('fail' + evt.message);
+        }
 
-        /*$kinvey.Push.onNotification(function(notification) {
-      alert(notification.message);
-    });*/
-        
     });
 })
-
-
 
 
 .config(function($stateProvider, $urlRouterProvider, $kinveyProvider, $ionicConfigProvider, $sceDelegateProvider) {
 
 
     $sceDelegateProvider.resourceUrlWhitelist([
-       // Allow same origin resource loads.
-       'self',
-       // Allow loading from our assets domain.  Notice the difference between * and **.
-       'http://storage.googleapis.com/**',
-       'https://docs.google.com/**']);
+        // Allow same origin resource loads.
+        'self',
+        // Allow loading from our assets domain.  Notice the difference between * and **.
+        'http://storage.googleapis.com/**',
+        'https://docs.google.com/**'
+    ]);
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
@@ -74,8 +69,11 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
     $ionicConfigProvider.tabs.position('bottom');
 
     $kinveyProvider.init({
-        appKey: 'kid_ZJk02vOUFg',
-        appSecret: 'c1a32d5b3c474d0fa20a6f33fef396d5'
+        appKey: 'kid_HkQsI2HG-',
+        appSecret: 'ea2eb7d8d45643fcaee883f1c04ab7a0',
+        apiHostname: "https://bgn-us1-baas.kinvey.com",
+        micHostname: "https://bgn-us1-auth.kinvey.com"
+
     });
 
 
@@ -126,22 +124,12 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
         }
     })
 
-    .state('menu.partner', {
-        url: '/partner',
+    .state('menu.doctors', {
+        url: '/doctors',
         views: {
             'menuContent': {
-                templateUrl: 'templates/partners.html',
-                controller: 'PartnerCtrl'
-            }
-        }
-    })
-
-    .state('menu.partner-detail', {
-        url: '/partner/:partnerId',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/partner-detail.html',
-                controller: 'PartnerDetailCtrl'
+                templateUrl: 'templates/doctors.html',
+                controller: 'DoctorsCtrl'
             }
         }
     })
@@ -178,60 +166,19 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
         }
     })
 
-    .state('menu.geo', {
-        url: "/geo",
-        views: {
-            'menuContent': {
-                templateUrl: "templates/map.html",
-                controller: 'MapCtrl'
-            }
-        }
-    })
-
-      .state('menu.patient', {
-        url: "/patient",
-        views: {
-            'menuContent': {
-                templateUrl: "templates/patient.html",
-                controller: 'PatientCtrl'
-            }
-        }
-    })
-
-      .state('menu.drugs', {
-      url: '/drugs',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/drugs.html',
-          controller: 'DrugCtrl'
-        }
-      }
-    })
-
-
-.state('menu.places', {
-        url: "/places",
-        views: {
-            'menuContent': {
-                templateUrl: "templates/places.html",
-                controller: 'PlacesCtrl'
-            }
-        }
-    })
-
 
 
     .state('menu.tabs.products', {
         url: '/products',
         views: {
             'tab-products': {
-                templateUrl: 'templates/products.html',
+                templateUrl: 'templates/tab-products.html',
                 controller: 'ProductCtrl'
             }
         }
     })
 
-      .state('menu.offline', {
+    .state('menu.offline', {
         url: '/offline',
         views: {
             'menuContent': {
@@ -245,23 +192,21 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
         url: '/search',
         views: {
             'tab-search': {
-                templateUrl: 'templates/search.html',
+                templateUrl: 'templates/tab-search.html',
                 controller: 'SearchCtrl'
             }
         }
     })
 
     .state('menu.video', {
-      url: '/video/:videoId',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/myvideo.html',
-          controller: 'MyVideoCtrl'
+        url: '/video/:videoId',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/myvideo.html',
+                controller: 'MyVideoCtrl'
+            }
         }
-      }
     })
-
-
 
     .state('menu.tabs.account', {
         url: '/account',
@@ -279,28 +224,25 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
 });
 
 
-
-
-
 //function selects the desired behavior depending on whether the user is logged or not
 function determineBehavior($kinvey, $rootScope, $state, $scope) {
     //var activeUser = new $kinvey.User();
     //activeUser = activeUser.getActiveUser();
-console.log( 'INSIDE DETERMINEBEHAVIOR');
+    console.log('INSIDE DETERMINEBEHAVIOR');
     //console.log( activeUser );
     console.log("$state.current.name: " + $state.current.name);
     var activeUser = $kinvey.User.getActiveUser();
 
     if (!activeUser) {
-      console.log("activeUser null redirecting");
-      if ($state.current.name != 'menu.tab.account') {
-          $state.go('menu.tabs.account');
-      }
-      return;
+        console.log("activeUser null redirecting");
+        if ($state.current.name != 'menu.tab.account') {
+            $state.go('menu.tabs.account');
+        }
+        return;
     } else {
-      //we have an active user
-      console.log("activeUser not null");
-      $state.go('menu.tabs.home', null, {reload:true});
-    
-  }
+        //we have an active user
+        console.log("activeUser not null");
+        $state.go('menu.tabs.home', null, { reload: true });
+
+    }
 }

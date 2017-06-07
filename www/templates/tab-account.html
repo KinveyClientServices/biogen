@@ -28,16 +28,17 @@
   </label>
 </div>
         <div class="padding"><br><br>
-            <button class="button button-block kinveybutton" ng-click="validateUserKinvey()">
+            <center><button class="button button-large button-outline button-positive" ng-click="validateUserKinvey()">
                 Login with Kinvey Auth
             </button>
-            <button class="button button-block kinveybutton" ng-click="validateUser()">
-                Login with MIC
-            </button>
+        </center><br>
+            <center><button class="button button-large button-outline button-positive" ng-click="validateUser()">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Login with MIC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </button></center>
             <span class="error acemtext" ng-show="submittedError">{{errorDescription}}</span>
         </div>
         <div class="padding">
-            <button class="button button-block kinveybutton" ng-click="logout()">
+            <center><button class="button button-small button-outline button-assertive" ng-click="logout()">
                 Logout
             </button>
             <span class="error" ng-show="submittedError">{{errorDescription}}</span>
