@@ -12,7 +12,7 @@
 - git clone https://github.com/KinveyClientServices/biogen.git
 - move into the directory created
 - npm install (accept any Ionic v1 prompts)
-- ionic serve (accept any IOnic v1 prompts)
+- ionic serve (accept any Ionic v1 prompts)
 
 At this point, the app should load in your browser, and you are ready.
 
