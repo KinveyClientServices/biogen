@@ -8,6 +8,9 @@
 - install cordova: npm install -g cordova
 - install ionic: npm install -g ionic
 - install gulp: npm install -g gulp
+- move to the parent directory of where you want to clone the repo
+- git clone https://github.com/KinveyClientServices/biogen.git
+- move into the directory created
 - npm install (accept any Ionic v1 prompts)
 - ionic serve (accept any IOnic v1 prompts)
 
