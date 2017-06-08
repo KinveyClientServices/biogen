@@ -285,7 +285,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         // TODO: LAB 8 - sync offline data to the backend
         //
         var promise = dataStore.sync().then(function(entities) {
-           
+
             console.log(entities.push);
             console.log(entities.pull);
             $scope.accounts = entities.pull;
@@ -498,28 +498,20 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     $scope.validateUser = function() {
         console.log('login user');
 
-        var user = new $kinvey.User();
-        user.loginWithMIC('http://localhost:8100', $kinvey.AuthorizationGrant.AuthorizationCodeLoginPage, {
-            version: 2
-        }).then(function(user) {
-            console.log('logged in');
-            $scope.submittedError = false;
+        // TODO: LAB 10 - Optional Mobile Identity Connect lab
+        //
+        $kinvey.User.loginWithMIC('http://localhost:8100', $kinvey.AuthorizationGrant.AuthorizationCodeLoginPage, { version: "v2" }).then(function(user) {
             console.log(user);
-            return $kinvey.Push.register();
-
+            $kinvey.Push.register();
+            $state.go('menu.tabs.home');
         }).catch(function(error) {
             console.log(error);
-            return null;
-        }).then(function() {
-            $state.go('menu.tabs.home');
-        }, function(err) {
-            console.log("error logging in");
-            $scope.submittedError = true;
-            $scope.errorDescription = err.description;
-            console.log(err);
-            console.log("Error login " + err.description);
             $state.go('menu.tabs.account');
         });
+
+
+        // end LAB 10
+        //
     }
 
     $scope.signUp = function() {

@@ -28,8 +28,8 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
             event.preventDefault(); // Stop the location change
             // Initialize Kinvey
             $kinvey.initialize({
-                appKey: 'kid_HkQsI2HG-',
-                appSecret: 'ea2eb7d8d45643fcaee883f1c04ab7a0',
+                appKey: '<appkey>',
+                appSecret: '<appsecret>',
                 apiHostname: "https://bgn-us1-baas.kinvey.com",
                 micHostname: "https://bgn-us1-auth.kinvey.com"
             }).then(function() {
