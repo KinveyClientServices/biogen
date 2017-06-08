@@ -1,6 +1,5 @@
 <ion-view cache-view="false" view-title="Search">
     <ion-content>
-        <!--<option ng-repeat="account in accountlist"</option>-->
         <div class="list">
             <label class="item item-input item-select">
                 <div class="input-label">
@@ -11,17 +10,17 @@
                 </select>
             </label>
         </div>
-       <div class="list">
-    <div class="list card">
-      <ion-item ng-repeat="product in thisproduct" type="item item-text-wrap">
-        <!--<div class="item item-avatar">-->
-          <center><img src="{{product.img}}" width="80%"></img></center>
-          <div class="item item-text-wrap">
-          <h2 class="item-text-wrap"><center>{{product.title}}</center></h2>
-          <p ng-bind-html="product.description" class="item-text-wrap"></p></div>
-          
-      </ion-item>
-    </div></div>
-
+        <div class="list">
+            <div class="list card">
+                <ion-item ng-repeat="product in thisproduct" type="item item-text-wrap">
+                    <center><img src="{{product.img}}" width="80%"></img>
+                    </center>
+                    <div class="item item-text-wrap">
+                        <h2 class="item-text-wrap"><center>{{product.title}}</center></h2>
+                        <p ng-bind-html="product.description" class="item-text-wrap"></p>
+                    </div>
+                </ion-item>
+            </div>
+        </div>
     </ion-content>
 </ion-view>

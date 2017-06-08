@@ -47,224 +47,59 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     $scope.searchme = function() {
         console.log('inside searchctrl');
 
-        console.log(document.getElementById("chosenProduct").value);
+        var querySelect = document.getElementById("chosenProduct").value;
+        console.log(querySelect);
+
         var dataStore = $kinvey.DataStore.getInstance('products', $kinvey.DataStoreType.Network);
 
+        // TODO: LAB 4 - query against the product collection
+        //
         var query = new $kinvey.Query();
-        query.equalTo('title', document.getElementById("chosenProduct").value);
-        dataStore.find(query).subscribe(function(result) {
-            var thisproduct = result;
-            console.log(thisproduct);
-            $scope.thisproduct = thisproduct;
+        query.equalTo('title', querySelect);
+        var stream = dataStore.find(query);
+        stream.subscribe(function onNext(entities) {
+            console.log(entities);
+            $scope.thisproduct = entities;
             $scope.$digest();
-            return;
+        }, function onError(error) {
+            console.log(error);
+        }, function onComplete() {
+            console.log('complete');
         });
+
+        // end LAB 4
+        //
     };
 })
 
 .controller('InsertTicketCtrl', function($scope, $kinvey, $ionicLoading, $cordovaFile) {
 
     $scope.taskInfo = {
-        myfile: "",
-        savedurl: ""
-    }
-
-    $scope.reportMe = function() {
-        console.log('reportme');
-        console.log($scope.taskInfo.savedurl);
-
-        // post filename to custom endpoint
-        //
-        var promise = $kinvey.CustomEndpoint.execute('analyzeImage', {
-            filename: $scope.taskInfo.savedurl
-        });
-        promise.then(function(response) {
-            console.log('here');
-            console.log(response[0]);
-            console.log(response[0].labelAnnotations);
-            var myannotations = response[0].labelAnnotations;
-
-            if (response[0].faceAnnotations != null) {
-                var faceannotations = response[0].faceAnnotations;
-
-                var joyLikelihood = faceannotations[0].joyLikelihood;
-                var angerLikelihood = faceannotations[0].angerLikelihood;
-                var sorrowLikelihood = faceannotations[0].sorrowLikelihood;
-                var surpriseLikelihood = faceannotations[0].surpriseLikelihood;
-
-                var myemotions = "EMOTIONS:";
-
-                if (joyLikelihood == "VERY_UNLIKELY" || joyLikelihood == "UNKNOWN") {
-                    joyLikelihood = false;
-                } else {
-                    joyLikelihood = true;
-                    myemotions = myemotions + " HAPPY";
-                }
-
-                if (angerLikelihood == "VERY_UNLIKELY" || angerLikelihood == "UNKNOWN") {
-                    angerLikelihood = false;
-                } else {
-                    angerLikelihood = true;
-                    myemotions = myemotions + " ANGRY";
-                }
-
-                if (sorrowLikelihood == "VERY_UNLIKELY" || sorrowLikelihood == "UNKNOWN") {
-                    sorrowLikelihood = false;
-                } else {
-                    sorrowLikelihood = true;
-                    myemotions = myemotions + " SAD";
-                }
-
-                if (surpriseLikelihood == "VERY_UNLIKELY" || surpriseLikelihood == "UNKNOWN") {
-                    surpriseLikelihood = false;
-                } else {
-                    surpriseLikelihood = true;
-                    myemotions = myemotions + " SURPRISE";
-                }
-
-
-                console.log(joyLikelihood);
-                console.log(angerLikelihood);
-                console.log(sorrowLikelihood);
-                console.log(surpriseLikelihood);
-
-                console.log(faceannotations);
-            }
-
-            if (response[0].textAnnotations != null) {
-
-            }
-            var dataArray = new Array;
-
-            for (var o in myannotations) {
-                dataArray.push(myannotations[o].description);
-            }
-
-            var photoLabels = dataArray.join(", ");
-            photoLabels = "ANALYSIS:  " + photoLabels;
-
-            if (myemotions && myemotions.length > 9) {
-                photoLabels = photoLabels + "\n\n" + myemotions;
-            }
-
-            if (response[0].textAnnotations != null) {
-                photoLabels = photoLabels + "<br>TEXT: " + response[0].textAnnotations[0].description;
-            }
-            console.log(photoLabels);
-
-            console.log(dataArray);
-            $ionicLoading.show({
-                template: photoLabels,
-                noBackdrop: true,
-                duration: 5000
-            });
-
-            $scope.fileAnalysis = response[0];
-        }).catch(function(err) {
-            console.log(err);
-        });
-
+        action: "",
+        duedate: "",
+        completed: false,
+        Title: "Personal Task"
     }
 
     $scope.insertme = function() {
-        console.log($scope.taskInfo.myfile);
+        console.log('inserting task');
 
-        var fileUri = $scope.taskInfo.myfile;
+        console.log($scope.taskInfo);
 
-        if (fileUri != "") {
+        var dataStore = $kinvey.DataStore.getInstance('tasks', $kinvey.DataStoreType.Network);
 
-            window.resolveLocalFileSystemURL(fileUri,
-                function(fileEntry) {
-                    fileEntry.file(function(file) {
-                        console.log(file);
 
-                        var reader = new FileReader();
-                        var myindex = $scope.taskInfo.myfile.lastIndexOf('/') + 1;
-                        var mystring = $scope.taskInfo.myfile.substring(myindex);
-
-                        reader.onload = function(event) {
-                            console.log('onload');;
-                            console.log(event);
-                        }
-
-                        reader.onloadend = function(event) {
-                            console.log('onloadend');
-                            var imagedata = event.target._result;
-                            console.log(imagedata.byteLength);
-                            var metadata = {
-                                filename: "ServicePic.jpg",
-                                mimeType: "image/jpeg",
-                                size: imagedata.byteLength,
-                                public: true
-                            };
-                            console.log(event);
-
-                            var promise = $kinvey.Files.upload(imagedata, metadata)
-                                .then(function(myfile) {
-                                    console.log(myfile);
-                                    var promise = $kinvey.Files.stream(myfile._id)
-                                        .then(function(file) {
-                                            console.log(file);
-                                            $scope.taskInfo.savedurl = file._downloadURL;
-
-                                        })
-                                        .catch(function(error) {
-                                            console.log(error);
-                                        });
-
-                                })
-                                .catch(function(error) {
-                                    console.log(error);
-                                });
-                        };
-
-                        reader.readAsArrayBuffer(file);
-                    });
-                }
-            );
-        }
-
-        // insert task
+        // TODO: LAB 7 - insert tasks into tasks collection
         //
-        var mytask = document.getElementById("task").value;
-        document.getElementById("task").value = "";
-        console.log(mytask);
-
-        var myduedate = document.getElementById("duedate").value;
-        console.log(duedate);
-        document.getElementById("duedate").value = "";
-
-
-
-        var mycomplete = document.getElementById("completed").checked;
-        console.log(mycomplete);
-
-
-        var complete = false;
-        if (mycomplete == true) {
-            complete = true;
-        } else {
-            complete = false;
-        }
-
-
-        var data = {};
-
-        data.action = mytask;
-        data.duedate = myduedate;
-        data.completed = complete;
-        data.class = "personal";
-        data.Title = "Personal Task";
-        data.savedpic = $scope.taskInfo.savedurl;
-        console.log(JSON.stringify(data));
-
-        var dataStore = $kinvey.DataStore.getInstance('tasks', $kinvey.DataStoreType.Network);
-
-        dataStore.save(data).then(function(result) {
-            console.log(result);
-        }).catch(function(error) {
+        var promise = dataStore.save($scope.taskInfo).then(function onSuccess(entity) {
+            console.log(entity);
+        }).catch(function onError(error) {
             console.log(error);
         });
+
+
+        // end LAB 7
+        //
 
         $ionicLoading.show({
             template: 'task inserted',
@@ -272,84 +107,6 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
             duration: 2000
         });
     }
-
-
-
-
-
-    // inserts the tasks into the tasks collection
-    //
-    /*$scope.insertme2 = function() {
-        var mytask = document.getElementById("task").value;
-        document.getElementById("task").value = "";
-        console.log(mytask);
-
-        var myduedate = document.getElementById("duedate").value;
-        console.log(duedate);
-        document.getElementById("duedate").value = "";
-
-
-
-        var mycomplete = document.getElementById("completed").checked;
-        console.log(mycomplete);
-
-
-        var complete = false;
-        if (mycomplete == true) {
-            complete = true;
-        } else {
-            complete = false;
-        }
-
-
-        var data = {};
-
-        data.action = mytask;
-        data.duedate = myduedate;
-        data.completed = complete;
-        data.class = "personal";
-        data.Title = "Personal Task";
-        console.log(JSON.stringify(data));
-
-        var dataStore = $kinvey.DataStore.getInstance('tasks', $kinvey.DataStoreType.Network);
-
-        dataStore.save(data).then(function(result) {
-            console.log(result);
-        }).catch(function(error) {
-            console.log(error);
-        });
-
-        $ionicLoading.show({
-            template: 'task inserted',
-            noBackdrop: true,
-            duration: 2000
-        });
-
-    };*/
-
-    $scope.picMe = function() {
-        console.log('saving picture');
-
-        navigator.camera.getPicture(onSuccess, onFail, {
-            quality: 50,
-            destinationType: Camera.DestinationType.FILE_URI
-        });
-
-        function onSuccess(imageURI) {
-            var image = document.getElementById('myImage');
-            image.src = imageURI;
-            $scope.taskInfo.myfile = imageURI;
-            console.log(imageURI);
-            // now you need to write this back
-        }
-
-        function onFail(message) {
-            alert('Failed because: ' + message);
-        }
-
-    }
-
-
 })
 
 
@@ -363,12 +120,21 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         console.log('inside productctrl');
 
-        dataStore.find().subscribe(function(result) {
-            var products = result;
-            console.log(products);
-            $scope.products = products;
+        // TODO: LAB 3 - pull all product data for display
+        //
+        var stream = dataStore.find();
+        stream.subscribe(function onNext(entities) {
+            console.log(entities);
+            $scope.products = entities;
             $scope.$digest();
+        }, function onError(error) {
+            console.log(error);
+        }, function onComplete() {
+            console.log('complete');
         });
+
+        //  end LAB 3
+        //
     });
 
     $scope.doRefresh = function() {
@@ -387,57 +153,56 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
 .controller('ProjectsCtrl', function($scope, $kinvey) {
 
-    // syncs with the tasks list collection
+    // refreshes the tasks list collection
     //
     $scope.doRefresh = function() {
         console.log('tasksrefresh');
-        var dataStore = $kinvey.DataStore.getInstance('tasks', $kinvey.DataStoreType.Sync);
+        var dataStore = $kinvey.DataStore.getInstance('tasks', $kinvey.DataStoreType.Network);
 
-        dataStore.sync(null, {
-            useDeltaFetch: false
-        }).then(function(result) {
-            var tasks = result.pull;
-            tasks.concat(result.push)
-            console.log(tasks);
-            $scope.tasks = tasks;
+        var stream = dataStore.find();
+        stream.subscribe(function onNext(entities) {
+            console.log(entities);
+            $scope.tasks = entities;
             $scope.$digest();
 
-        }).catch(function(error) {
+        }, function onError(error) {
             console.log(error);
+        }, function onComplete() {
+            console.log('complete');
         });
+
     }
 
     $scope.$on('$ionicView.beforeEnter', function() {
-        console.log('tasks load view');
-        var dataStore = $kinvey.DataStore.getInstance('tasks', $kinvey.DataStoreType.Sync);
+        console.log('tasks load view2');
+        var dataStore = $kinvey.DataStore.getInstance('tasks', $kinvey.DataStoreType.Network);
 
-        // pass null and the useDeltaFetch option because some of the delta fetch options for
-        // rapid connectors might not be there in SharePoint today
+        // TODO: LAB 6 - GetAll from Tasks collection
         //
-        dataStore.sync(null, {
-            useDeltaFetch: false
-        }).then(function(result) {
-            var tasks = result.pull;
-            console.log(tasks);
-            $scope.tasks = tasks;
+
+        var stream = dataStore.find();
+        stream.subscribe(function onNext(entities) {
+            console.log(entities);
+            $scope.tasks = entities;
             $scope.$digest();
 
-        }).catch(function(error) {
+        }, function onError(error) {
             console.log(error);
+        }, function onComplete() {
+            console.log('complete');
         });
+
+        // end LAB 6
+        //
 
     })
 })
 
 .controller('RefCtrl', function($scope, $kinvey) {
-    // With the new view caching in Ionic, Controllers are only called
-    // when they are recreated or on app start, instead of every page change.
-    // To listen for when this page is active (for example, to refresh data),
-    // listen for the $ionicView.enter event:
-    //
+
     $scope.doRefreshRef = function() {
         console.log('ref refresh view');
-        //var fileStore = new $kinvey.Files();
+
         var query = new $kinvey.Query();
         query.greaterThan('size', 0);
 
@@ -454,15 +219,22 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     $scope.$on('$ionicView.beforeEnter', function() {
         console.log('ref load view');
 
+        // TODO: LAB 9 - pull files form the FileStore
+        //
         var query = new $kinvey.Query();
-        query.greaterThan('size', 0);
-        var promise = $kinvey.Files.find(query).then(function(files) {
-            console.log(files);
-            $scope.files = files;
-            $scope.$digest();
-        }).catch(function(error) {
-            console.log(error);
-        });
+        query.equalTo('mimeType', 'image/png');
+        var promise = $kinvey.Files.find(null)
+            .then(function(files) {
+                console.log(files);
+                $scope.files = files;
+                $scope.$digest();
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+
+        // end LAB 9
+        //
 
     });
 })
@@ -509,17 +281,23 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
     $scope.syncme = function() {
         console.log('syncme');
-        dataStore.sync().then(function(result) {
-            console.log(result);
-            console.log('pull = ');
-            console.log(result.pull);
-            console.log('push=');
-            console.log(result.push);
-            $scope.servicetechs = result.pull;
+
+        // TODO: LAB 8 - sync offline data to the backend
+        //
+        var promise = dataStore.sync().then(function(entities) {
+           
+            console.log(entities.push);
+            console.log(entities.pull);
+            $scope.accounts = entities.pull;
             $scope.$digest();
+
         }).catch(function(error) {
             console.log(error);
         });
+
+
+        // end LAB 8
+        //
     }
 
     /*$scope.deltame = function() {
@@ -568,14 +346,21 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         var dataStore = $kinvey.DataStore.getInstance('doctors', $kinvey.DataStoreType.Network);
 
-        dataStore.find(null, {
-            useDeltaFetch: false
-        }).subscribe(function(result) {
-            console.log(result);
-
-            $scope.accounts = result;
+        // TODO: LAB 5 - Pull doctors
+        //
+        var stream = dataStore.find();
+        stream.subscribe(function onNext(entities) {
+            console.log(entities);
+            $scope.accounts = entities;
             $scope.$digest();
+        }, function onError(error) {
+            console.log(error);
+        }, function onComplete() {
+            console.log('complete');
         });
+
+        // end LAB 5
+        //
     }
 
     $scope.$on('$ionicView.beforeEnter', function() {
@@ -594,7 +379,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
 
 
-.controller('BrandCtrl', function($scope, $kinvey) {
+/*.controller('BrandCtrl', function($scope, $kinvey) {
 
     $scope.doRefreshBrand = function() {
         console.log('refresh brand');
@@ -605,14 +390,14 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     }
 
     $scope.$on('$ionicView.beforeEnter', function() {
-        console.log('partner load view');
+        console.log('brand load view');
         $kinvey.DataStore.find('brand').then(function(brand) {
             console.log(brand);
             $scope.mybrand = brand;
         });
     });
 
-})
+})*/
 
 
 
@@ -688,34 +473,24 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         console.log($scope.userData.email);
 
-        var promise = $kinvey.User.login({
-            username: $scope.userData.email,
-            password: $scope.userData.password
-        });
-        promise.then(
-            function(response) {
-                // Kinvey login finished with success
-                $scope.submittedError = false;
-                console.log('logged in with KinveyAuth2');
-                $state.go('menu.tabs.home');
-                return $kinvey.Push.register();
-            }).catch(
-            function(error) {
-                //Kinvey login finished with error
-                $scope.submittedError = true;
-                $scope.errorDescription = error.description;
-                console.log(error);
-
-                if (error.name == "InsufficientCredentialsError") {
-                    console.log('insufficient credentials');
-                }
-                $ionicLoading.show({
-                    template: error.message,
-                    noBackdrop: true,
-                    duration: 2000
-                });
-                console.log("Error login " + error.description); //
+        // TODO: LAB 2 - authenticate against Kinvey
+        // remember to replace username and password with user entered values
+        //
+        var promise = $kinvey.User.login($scope.userData.email, $scope.userData.password);
+        promise.then(function(user) {
+            $state.go('menu.tabs.home');
+            return $kinvey.Push.register();
+        }).catch(function(error) {
+            console.log(error.description);
+            $ionicLoading.show({
+                template: error.message,
+                noBackdrop: true,
+                duration: 2000
             });
+        });
+
+        // End of LAB 2
+
     };
 
 
@@ -797,11 +572,11 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
             /*$kinvey.Push.unregister()
                 .then(function(response) {
                     console.log(response);*/
-                    return $kinvey.User.logout();
-                /*})
-                .catch(function(error) {
-                    console.log(error);
-                });*/
+            return $kinvey.User.logout();
+            /*})
+            .catch(function(error) {
+                console.log(error);
+            });*/
         } else {
             console.log('no user to log out');
         }

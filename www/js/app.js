@@ -10,20 +10,47 @@ var onNotificationCallback = function(notification) {
     alert(notification.message);
 };
 
+var initialized = false;
+
 angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWebViewPatch', 'ngCordova'])
 
 .run(function($ionicPlatform, $kinvey, $rootScope, $state, $location) {
 
     $rootScope.primarycolor = "#2573ba";
     $rootScope.productsname = "Products";
-    determineBehavior($kinvey, $rootScope, $state);
+
+    // TODO: LAB  1 - initialize Kinvey
+    // be sure to specify apiHostname and micHostnme
+    // add in determineBehavior routing and push regitration
+    //
+   $rootScope.$on('$locationChangeStart', function(event, newUrl) {
+        if (initialized === false) {
+            event.preventDefault(); // Stop the location change
+            // Initialize Kinvey
+            $kinvey.initialize({
+                appKey: 'kid_HkQsI2HG-',
+                appSecret: 'ea2eb7d8d45643fcaee883f1c04ab7a0',
+                apiHostname: "https://bgn-us1-baas.kinvey.com",
+                micHostname: "https://bgn-us1-auth.kinvey.com"
+            }).then(function() {
+                initialized = true;
+                //$location..path($location.url(newUrl).hash); // Go to the page
+                determineBehavior($kinvey, $rootScope, $state);
 
 
-    if ($kinvey.User.getActiveUser()) {
-        $kinvey.Push.register();
-    }
+                if ($kinvey.User.getActiveUser()) {
+                    $kinvey.Push.register();
+                }
 
-    $kinvey.Push.onNotification(onNotificationCallback);
+                $kinvey.Push.onNotification(onNotificationCallback);
+
+            }).catch(function(error) {
+                console.log(error);
+            });
+        }
+    });
+
+    // end LAB 1
 
 
     $ionicPlatform.ready(function() {
@@ -36,18 +63,6 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
             // org.apache.cordova.statusbar required
             StatusBar.styleLightContent();
         }
-
-        try {
-            navigator.geolocation.getCurrentPosition(function(loc) {
-                console.log('getting position');
-                var coord = [loc.coords.latitude, loc.coords.longitude];
-                console.log(coord);
-                $rootScope.current_loc = coord;
-            });
-        } catch (evt) {
-            alert('fail' + evt.message);
-        }
-
     });
 })
 
@@ -67,15 +82,6 @@ angular.module('starter', ['ionic', 'kinvey', 'starter.controllers', 'ngIOS9UIWe
     // Set up the various states which the app can be in.
     // Each state's controller can be found in controllers.js
     $ionicConfigProvider.tabs.position('bottom');
-
-    $kinveyProvider.init({
-        appKey: 'kid_HkQsI2HG-',
-        appSecret: 'ea2eb7d8d45643fcaee883f1c04ab7a0',
-        apiHostname: "https://bgn-us1-baas.kinvey.com",
-        micHostname: "https://bgn-us1-auth.kinvey.com"
-
-    });
-
 
     $stateProvider
         .state('menu', {

@@ -16,15 +16,15 @@
                 </div>
                 <label class="item item-input item-thumbnail-left">
                     <i class="icon ion-ios-list-outline placeholder-icon"></i>
-                    <input type="text" placeholder="Task" id="task">
+                    <input type="text" placeholder="Task" id="task" ng-model="taskInfo.action">
                 </label>
                 <label class="item item-input item-thumbnail-left">
                     <i class="icon ion-ios-list-outline placeholder-icon"></i>
-                    <input type="text" placeholder="Due Date" id="duedate">
+                    <input type="text" placeholder="Due Date" id="duedate" ng-model="taskInfo.duedate">
                 </label>
                 <li class="item item-checkbox bar-energized">
                     <label class="checkbox">
-                        <input type="checkbox" id="completed">
+                        <input type="checkbox" id="completed" ng-model="taskInfo.completed">
                     </label>
                     Completed?
                 </li>
