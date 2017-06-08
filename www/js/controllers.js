@@ -54,18 +54,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         // TODO: LAB 4 - query against the product collection
         //
-        var query = new $kinvey.Query();
-        query.equalTo('title', querySelect);
-        var stream = dataStore.find(query);
-        stream.subscribe(function onNext(entities) {
-            console.log(entities);
-            $scope.thisproduct = entities;
-            $scope.$digest();
-        }, function onError(error) {
-            console.log(error);
-        }, function onComplete() {
-            console.log('complete');
-        });
+        
 
         // end LAB 4
         //
@@ -91,11 +80,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         // TODO: LAB 7 - insert tasks into tasks collection
         //
-        var promise = dataStore.save($scope.taskInfo).then(function onSuccess(entity) {
-            console.log(entity);
-        }).catch(function onError(error) {
-            console.log(error);
-        });
+        
 
 
         // end LAB 7
@@ -122,16 +107,8 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         // TODO: LAB 3 - pull all product data for display
         //
-        var stream = dataStore.find();
-        stream.subscribe(function onNext(entities) {
-            console.log(entities);
-            $scope.products = entities;
-            $scope.$digest();
-        }, function onError(error) {
-            console.log(error);
-        }, function onComplete() {
-            console.log('complete');
-        });
+
+
 
         //  end LAB 3
         //
@@ -180,17 +157,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         // TODO: LAB 6 - GetAll from Tasks collection
         //
 
-        var stream = dataStore.find();
-        stream.subscribe(function onNext(entities) {
-            console.log(entities);
-            $scope.tasks = entities;
-            $scope.$digest();
 
-        }, function onError(error) {
-            console.log(error);
-        }, function onComplete() {
-            console.log('complete');
-        });
 
         // end LAB 6
         //
@@ -221,17 +188,8 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         // TODO: LAB 9 - pull files form the FileStore
         //
-        var query = new $kinvey.Query();
-        query.equalTo('mimeType', 'image/png');
-        var promise = $kinvey.Files.find(null)
-            .then(function(files) {
-                console.log(files);
-                $scope.files = files;
-                $scope.$digest();
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
+        
+
 
         // end LAB 9
         //
@@ -264,7 +222,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         //save the task to the store
         dataStore.save(data).then(function(result) {
             console.log(result);
-            //render(result);
+            
             console.log(data);
             $scope.accounts = $scope.accounts.concat(result);
             $scope.$digest();
@@ -284,16 +242,6 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         // TODO: LAB 8 - sync offline data to the backend
         //
-        var promise = dataStore.sync().then(function(entities) {
-           
-            console.log(entities.push);
-            console.log(entities.pull);
-            $scope.accounts = entities.pull;
-            $scope.$digest();
-
-        }).catch(function(error) {
-            console.log(error);
-        });
 
 
         // end LAB 8
@@ -348,16 +296,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
         // TODO: LAB 5 - Pull doctors
         //
-        var stream = dataStore.find();
-        stream.subscribe(function onNext(entities) {
-            console.log(entities);
-            $scope.accounts = entities;
-            $scope.$digest();
-        }, function onError(error) {
-            console.log(error);
-        }, function onComplete() {
-            console.log('complete');
-        });
+        
 
         // end LAB 5
         //
@@ -377,27 +316,6 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
     })
 })
 
-
-
-/*.controller('BrandCtrl', function($scope, $kinvey) {
-
-    $scope.doRefreshBrand = function() {
-        console.log('refresh brand');
-        $kinvey.DataStore.find('brand').then(function(mybrand) {
-            console.log(mybrand);
-            $scope.mybrand = mybrand;
-        });
-    }
-
-    $scope.$on('$ionicView.beforeEnter', function() {
-        console.log('brand load view');
-        $kinvey.DataStore.find('brand').then(function(brand) {
-            console.log(brand);
-            $scope.mybrand = brand;
-        });
-    });
-
-})*/
 
 
 
@@ -476,18 +394,7 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         // TODO: LAB 2 - authenticate against Kinvey
         // remember to replace username and password with user entered values
         //
-        var promise = $kinvey.User.login($scope.userData.email, $scope.userData.password);
-        promise.then(function(user) {
-            $state.go('menu.tabs.home');
-            return $kinvey.Push.register();
-        }).catch(function(error) {
-            console.log(error.description);
-            $ionicLoading.show({
-                template: error.message,
-                noBackdrop: true,
-                duration: 2000
-            });
-        });
+
 
         // End of LAB 2
 
@@ -495,31 +402,17 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
 
 
 
-    $scope.validateUser = function() {
+    $scope.validateUserMIC = function() {
         console.log('login user');
 
-        var user = new $kinvey.User();
-        user.loginWithMIC('http://localhost:8100', $kinvey.AuthorizationGrant.AuthorizationCodeLoginPage, {
-            version: 2
-        }).then(function(user) {
-            console.log('logged in');
-            $scope.submittedError = false;
-            console.log(user);
-            return $kinvey.Push.register();
 
-        }).catch(function(error) {
-            console.log(error);
-            return null;
-        }).then(function() {
-            $state.go('menu.tabs.home');
-        }, function(err) {
-            console.log("error logging in");
-            $scope.submittedError = true;
-            $scope.errorDescription = err.description;
-            console.log(err);
-            console.log("Error login " + err.description);
-            $state.go('menu.tabs.account');
-        });
+        // TODO: Lab 10 - Optional Mobile Identity Connect lab
+        //
+
+       
+
+        // end LAB 10
+        
     }
 
     $scope.signUp = function() {
@@ -569,18 +462,12 @@ angular.module('starter.controllers', ['kinvey', 'ngCordova'])
         var user = $kinvey.User.getActiveUser();
         if (user) {
 
-            /*$kinvey.Push.unregister()
-                .then(function(response) {
-                    console.log(response);*/
             return $kinvey.User.logout();
-            /*})
-            .catch(function(error) {
-                console.log(error);
-            });*/
+            
         } else {
             console.log('no user to log out');
         }
-        //$kinvey.User.logout();
+        
         $ionicLoading.show({
             template: "User logged out",
             noBackdrop: true,
